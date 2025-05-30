@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "../utils/trpcClient.js";
+import DOMPurify from "dompurify";
 
 function LandingPage() {
   const [text, setText] = useState("");
@@ -26,11 +27,12 @@ function LandingPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (text.trim()) {
-      submit.mutate({ content: text });
+    const sanitizedText = DOMPurify.sanitize(text).trim();
+
+    if (sanitizedText) {
+      submit.mutate({ content: sanitizedText });
     }
   };
-
   const totalPages = list.data?.totalPages || 1;
 
   return (
